@@ -1,0 +1,25 @@
+--Tableau 1
+--Continental Breakdown of deaths
+SELECT continent, SUM(CAST (new_deaths as int)) AS DEATHS
+FROM MY_First_Project..Covid_Deaths$
+WHERE total_cases IS NOT NULL AND  gdp_per_capita IS NOT NULL AND continent IS NOT NULL
+GROUP BY continent
+ORDER BY DEATHS DESC
+
+--Tableau 2
+--%age population infected
+SELECT dea.location, population, MAX(total_cases) AS TotalInfection,  (MAX(total_cases)*100)/population AS Percentinfected 
+FROM MY_First_Project..Covid_Deaths$ dea
+JOIN MY_First_Project..Covid_Vaccination$ vac
+ON dea.location = vac.location 
+WHERE total_cases IS NOT NULL and population IS NOT NULL 
+GROUP BY dea.location, population
+ORDER BY Percentinfected DESC
+
+--Tableau 3
+--% age population fully vaccinated
+SELECT location, MAX(CAST (people_fully_vaccinated AS numeric)) AS People_fully_vaccinated, population ,  (MAX(CAST (people_fully_vaccinated AS numeric)*100)/population) AS Percent_fully_vaccinated
+FROM MY_First_Project..Covid_Vaccination$ vac
+WHERE population IS NOT NULL AND continent IS NOT NULL  
+GROUP BY location, population
+ORDER BY Percent_fully_vaccinated DESC
